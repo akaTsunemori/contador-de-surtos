@@ -6,7 +6,7 @@ from os import getenv, makedirs
 from os.path import exists
 
 
-import src.commands as commands
+import src.commands as cmd
 import src.events as events
 import src.utils as utils
 from src.bot_error import BotError
@@ -19,28 +19,29 @@ if not exists('./database/'):
 # bot setup
 intents =  discord.Intents.default()
 intents.message_content = True
-bot = commands.Bot(command_prefix='&', intents=intents)
+bot = commands.Bot(command_prefix='>', intents=intents)
 bot.remove_command('help')
 
 
 # surtos[id] = [(data, surto), ...]: list
 surtos = dict()
+# last_surtos[id] = (data, surto)
 last_surtos = dict()
 
 
 def bot_setup() -> None:
     for guild in bot.guilds:
         id = guild.id
-        try:
-            surtos_db = open(f'./database/{id}.json', 'r')
-            last_surto_db = open(f'./database/{id}_last.json', 'r')
-            surtos[id] = json.load(surtos_db)
-            last_surtos[id] = json.load(last_surto_db)
-            surtos_db.close()
-            last_surto_db.close()
-        except FileNotFoundError:
-            # Create DB
-            pass
+        if not (exists(f'./database/{id}.json') and exists(f'./database/{id}_last.json')):
+            surtos[id] = list()
+            last_surtos[id] = tuple()
+            utils.save(id, surtos, last_surtos)
+        surtos_db = open(f'./database/{id}.json', 'r')
+        last_surto_db = open(f'./database/{id}_last.json', 'r')
+        surtos[id] = json.load(surtos_db)
+        last_surtos[id] = json.load(last_surto_db)
+        surtos_db.close()
+        last_surto_db.close()
 
 
 # Bot events
@@ -61,7 +62,16 @@ async def on_guild_join(guild: discord.Guild) -> None:
 @commands.has_permissions(administrator=True) # These perms should be modified
 async def _surto(context: commands.Context, *args) -> None:
     try:
-        await commands.surto(context, args,)
+        await cmd.surto(context, surtos, last_surtos, args)
+    except BotError as e:
+        await context.channel.send(str(e))
+
+
+@bot.command(name='surtos')
+@commands.has_permissions(administrator=True) # These perms should be modified
+async def _surtos(context: commands.Context, *args) -> None:
+    try:
+        await cmd.surtos(context, surtos)
     except BotError as e:
         await context.channel.send(str(e))
 
