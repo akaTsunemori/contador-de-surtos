@@ -53,8 +53,11 @@ async def on_ready() -> None:
 
 @bot.event
 async def on_guild_join(guild: discord.Guild) -> None:
-    pass
-    # await events.on_guild_join()
+    id = guild.id
+    if not (exists(f'./database/{id}.json') and exists(f'./database/{id}_last.json')):
+        surtos[id] = list()
+        last_surtos[id] = tuple()
+        utils.save(id, surtos, last_surtos)
 
 
 # Bot commands
