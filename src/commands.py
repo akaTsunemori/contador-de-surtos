@@ -25,6 +25,7 @@ async def surtos(context: commands.Context, surtos: dict) -> None:
     id = context.guild.id
     if not surtos[id]:
         raise BotError('A lista de surtos está vazia.')
+    surtos[id].sort(reverse=True)
     surtos_list = []
     for date, reason in surtos[id]:
         surtos_list.append(utils.str_surto(date, reason))
