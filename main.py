@@ -47,9 +47,12 @@ async def bot_setup() -> None:
 
 
 # Bot tasks
-@tasks.loop(seconds=3600)
+@tasks.loop(hours=1)
 async def background_task() -> None:
-    await src.tasks.daily_stats(bot, surtos, last_surtos)
+    try:
+        await src.tasks.daily_stats(bot, surtos, last_surtos)
+    except BotError as e:
+        return
 
 
 # Bot events

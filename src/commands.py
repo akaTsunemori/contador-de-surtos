@@ -23,17 +23,17 @@ async def surto(context: commands.Context, surtos: dict, last_surtos: dict, *arg
 
 async def surtos(context: commands.Context, surtos: dict) -> None:
     id = context.guild.id
+    if not surtos[id]:
+        raise BotError('A lista de surtos está vazia.')
     surtos_list = []
     for date, reason in surtos[id]:
         surtos_list.append(utils.str_surto(date, reason))
     surtos_str = '\n\n'.join(surtos_list)
-    if not surtos_str:
-        raise BotError('A lista de surtos está vazia.')
     await context.channel.send(surtos_str)
 
 
 async def stats(id: int, channel: discord.TextChannel, surtos: dict, last_surtos: dict) -> None:
-    if not (surtos[id] and last_surtos[id]):
+    if not surtos[id]:
         raise BotError('A lista de surtos está vazia.')
     amount = len(surtos[id])
     date, reason = last_surtos[id]
