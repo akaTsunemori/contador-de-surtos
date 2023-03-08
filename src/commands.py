@@ -47,3 +47,21 @@ async def stats(id: int, channel: discord.TextChannel, surtos: dict, last_surtos
         f'e aconteceu na data **{date}**.'
     )
 
+
+async def reset(context: commands.Context, args: list, surtos: dict, last_surtos: dict) -> None:
+    id = context.guild.id
+    if not args:
+        raise BotError('ID do servidor ausente.')
+    if len(args) > 1:
+        raise BotError('Argumento inválido: muitos argumentos informados.')
+    try:
+        input_id = int(args[0])
+    except ValueError:
+        raise BotError('Argumento inválido.')
+    if input_id != id:
+        raise BotError('O ID informado não corresponde ao ID do servidor.')
+    surtos[id] = list()
+    last_surtos[id] = tuple()
+    utils.save(id, surtos, last_surtos)
+    await context.channel.send('Feito.')
+
