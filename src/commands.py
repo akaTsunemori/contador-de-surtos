@@ -12,11 +12,11 @@ async def surto(context: commands.Context, surtos: dict, last_surtos: dict, *arg
     reason = ' '.join(args[0])
     if not reason:
         raise BotError('Nenhuma razão válida para o surto foi informada.')
-    if len(reason) > 1500:
+    if len(reason) > 1900:
         raise BotError('Que surto grande é esse? Resume aí, por favor.')
     date = utils.get_date()
-    surtos[id].append((date, reason))
-    last_surtos[id] = (date, reason)
+    surtos[id].append([date, reason])
+    last_surtos[id] = [date, reason]
     utils.save(id, surtos, last_surtos)
     await context.channel.send(utils.str_surto(date, reason))
 
@@ -27,10 +27,20 @@ async def surtos(context: commands.Context, surtos: dict) -> None:
         raise BotError('A lista de surtos está vazia.')
     surtos[id].sort(reverse=True)
     surtos_list = []
+    chr_count = 0
     for date, reason in surtos[id]:
-        surtos_list.append(utils.str_surto(date, reason))
-    surtos_str = '\n\n'.join(surtos_list)
-    await context.channel.send(surtos_str)
+        surto_str = utils.str_surto(date, reason)
+        if chr_count + len(surto_str) > 2000:
+            chr_count = 0
+            surtos_str = '\n\n'.join(surtos_list)
+            await context.channel.send(surtos_str)
+            surtos_list.clear()
+        chr_count += len(surto_str)
+        surtos_list.append(surto_str)
+    if surtos_list:
+        surtos_str = '\n\n'.join(surtos_list)
+        await context.channel.send(surtos_str)
+
 
 
 async def stats(id: int, channel: discord.TextChannel, surtos: dict, last_surtos: dict) -> None:
@@ -61,7 +71,7 @@ async def reset(context: commands.Context, args: list, surtos: dict, last_surtos
     if input_id != id:
         raise BotError('O ID informado não corresponde ao ID do servidor.')
     surtos[id] = list()
-    last_surtos[id] = tuple()
+    last_surtos[id] = list()
     utils.save(id, surtos, last_surtos)
     await context.channel.send('Feito.')
 

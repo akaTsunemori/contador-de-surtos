@@ -13,11 +13,11 @@ def get_date(current_time: datetime = None) -> datetime:
     if not current_time:
         tz = pytz.timezone('America/Sao_Paulo')
         current_time = datetime.now(tz=tz)
-    return current_time.strftime('%d/%m/%Y, %H:%M')
+    return current_time.strftime('%d/%m/%Y, %H:%M:%S')
 
 
 def str_surto(date: str, reason: str):
-    return f'**Surto:** {reason}\n**Data:** {date}'
+    return f'**Surto:** {reason}\n**Data:** {date[:-3]}'
 
 
 def save(id: int, surtos: dict, last_surtos: dict) -> None:

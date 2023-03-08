@@ -33,7 +33,7 @@ async def bot_setup() -> None:
         id = guild.id
         if not (exists(f'./database/{id}.json') and exists(f'./database/{id}_last.json')):
             surtos[id] = list()
-            last_surtos[id] = tuple()
+            last_surtos[id] = list()
             utils.save(id, surtos, last_surtos)
         surtos_db = open(f'./database/{id}.json', 'r')
         last_surto_db = open(f'./database/{id}_last.json', 'r')
@@ -68,7 +68,7 @@ async def on_guild_join(guild: discord.Guild) -> None:
     id = guild.id
     if not (exists(f'./database/{id}.json') and exists(f'./database/{id}_last.json')):
         surtos[id] = list()
-        last_surtos[id] = tuple()
+        last_surtos[id] = list()
         utils.save(id, surtos, last_surtos)
     await guild.create_text_channel('contador-de-surtos')
 
