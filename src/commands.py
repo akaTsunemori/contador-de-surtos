@@ -12,7 +12,7 @@ async def surto(context: commands.Context, surtos: dict, last_surtos: dict, *arg
     reason = ' '.join(args[0])
     if not reason:
         raise BotError('Nenhuma razão válida para o surto foi informada.')
-    if len(reason) > 1900:
+    if len(reason) > 900:
         raise BotError('Que surto grande é esse? Resume aí, por favor.')
     date = utils.get_date()
     surtos[id].append([date, reason])
@@ -23,24 +23,14 @@ async def surto(context: commands.Context, surtos: dict, last_surtos: dict, *arg
 
 async def surtos(context: commands.Context, surtos: dict) -> None:
     id = context.guild.id
-    if not surtos[id]:
-        raise BotError('A lista de surtos está vazia.')
-    surtos[id].sort(reverse=True)
-    surtos_list = []
-    chr_count = 0
-    for date, reason in surtos[id]:
-        surto_str = utils.str_surto(date, reason)
-        if chr_count + len(surto_str) > 2000:
-            chr_count = 0
-            surtos_str = '\n\n'.join(surtos_list)
-            await context.channel.send(surtos_str)
-            surtos_list.clear()
-        chr_count += len(surto_str)
-        surtos_list.append(surto_str)
-    if surtos_list:
-        surtos_str = '\n\n'.join(surtos_list)
-        await context.channel.send(surtos_str)
-
+    surtos_from_id: list = surtos[id].copy()
+    surtos_from_id.sort(reverse=True)
+    view = utils.surtos_view(
+            surtos_from_id=surtos_from_id,
+            color=0x8338ec,
+            title='Lista de surtos',
+            description='Ordenada do mais recente ao mais antigo.')
+    await context.channel.send(embed=view.starting_page, view=view)
 
 
 async def stats(id: int, channel: discord.TextChannel, surtos: dict, last_surtos: dict) -> None:
@@ -48,7 +38,7 @@ async def stats(id: int, channel: discord.TextChannel, surtos: dict, last_surtos
         raise BotError('A lista de surtos está vazia.')
     amount = len(surtos[id])
     date, reason = last_surtos[id]
-    ultimo_surto_datetime = datetime.datetime.strptime(date, '%d/%m/%Y, %H:%M')
+    ultimo_surto_datetime = datetime.datetime.strptime(date, '%d/%m/%Y, %H:%M:%S')
     time_delta = datetime.datetime.now() - ultimo_surto_datetime
     await channel.send(
         f'Estamos há **{time_delta.days} dias** sem nenhum surto.\n'\
@@ -75,3 +65,20 @@ async def reset(context: commands.Context, args: list, surtos: dict, last_surtos
     utils.save(id, surtos, last_surtos)
     await context.channel.send('Feito.')
 
+
+async def remove(bot: commands.Bot, context: commands.Context, surtos: dict):
+    id = context.guild.id
+    surtos_from_id: list = surtos[id].copy()
+    surtos_from_id.sort(reverse=True)
+    view = utils.surtos_view(
+            surtos_from_id=surtos_from_id,
+            color=0xfb5607,
+            title='Remover surto',
+            description='Digite o número correspondente ao surto a ser removido.')
+    await context.channel.send(embed=view.starting_page, view=view)
+    msg = await bot.wait_for('message')
+    print(msg.content, surtos_from_id[int(msg.content) - 1]) # Now it's just verification, removal from the list and saving.
+
+
+# Embed color palette:
+#   yellow: ffbe0b, orange: fb5607, pink: ff006e, purple: 8338ec, blue: 3a86ff

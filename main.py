@@ -110,6 +110,15 @@ async def _reset(context: commands.Context, *args) -> None:
         await context.channel.send(str(e))
 
 
+@bot.command(name='remove')
+@commands.has_permissions(administrator=True)
+async def _remove(context: commands.Context, *args) -> None:
+    try:
+        await cmd.remove(bot, context, surtos)
+    except BotError as e:
+        await context.channel.send(str(e))
+
+
 # Load token and run bot
 load_dotenv('./token.env')
 bot.run(getenv('TOKEN'))

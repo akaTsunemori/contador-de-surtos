@@ -1,12 +1,11 @@
+import discord
 import json
 import pytz
 from datetime import datetime
 from discord.ext import commands
 
 
-# https://docs.python.org/3/library/datetime.html#module-datetime
-# I can just save the dates as objects and have a function to
-# return them as strings, so I can easily calculate the time delta.
+from src.paginator import PaginatorView
 
 
 def get_date(current_time: datetime = None) -> datetime:
@@ -28,3 +27,26 @@ def save(id: int, surtos: dict, last_surtos: dict) -> None:
     json.dump(last_surtos[id], last_surtos_db)
     last_surtos_db.close()
 
+
+def surtos_view(surtos_from_id: list, color: int, title: str, description: str) -> PaginatorView:
+    surtos_list = surtos_from_id.copy()
+    surtos_list.reverse()
+    embeds = []
+    tmp_surtos_list = []
+    surto_num = 1
+    while surtos_list:
+        date, reason = surtos_list.pop()
+        surto_str = str_surto(date, reason)
+        tmp_surtos_list.append(surto_str)
+        if surtos_list and len(tmp_surtos_list) < 5:
+            continue
+        embed = discord.Embed(color=color)
+        embed.title = title
+        embed.description = description
+        for surto in tmp_surtos_list:
+            embed.add_field(name=f'{surto_num}.', value=surto, inline=False)
+            surto_num += 1
+        embeds.append(embed)
+        tmp_surtos_list.clear()
+    view = PaginatorView(embeds)
+    return view
