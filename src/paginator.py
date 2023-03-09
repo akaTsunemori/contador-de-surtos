@@ -12,6 +12,7 @@ class PaginatorView(discord.ui.View):
         self.len = len(embeds)
         self.current_page = 1
         self.children[0].disabled = True
+        self.pages[0].set_footer(text=f'Página {self.current_page} de {self.len}.')
         if self.current_page == self.len:
             self.children[1].disabled = True
 

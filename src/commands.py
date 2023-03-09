@@ -45,8 +45,7 @@ async def stats(id: int, channel: discord.TextChannel, surtos: dict, last_surtos
         f'Estamos há **{time_delta.days} dias** sem nenhum surto.\n'\
         f'No total, **{amount} surtos** foram registrados.\n\n'\
         f'O motivo do último surto foi **{reason}**,\n'\
-        f'e aconteceu na data **{date[:-3]}**.'
-    )
+        f'e aconteceu na data **{date[:-3]}**.')
 
 
 async def reset(context: commands.Context, args: list, surtos: dict, last_surtos: dict) -> None:

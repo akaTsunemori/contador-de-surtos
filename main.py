@@ -51,7 +51,7 @@ async def bot_setup() -> None:
 async def background_task() -> None:
     try:
         await src.tasks.daily_stats(bot, surtos, last_surtos)
-    except BotError as e:
+    except BotError:
         return
 
 
