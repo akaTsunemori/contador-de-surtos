@@ -45,7 +45,7 @@ async def stats(id: int, channel: discord.TextChannel, surtos: dict, last_surtos
         f'Estamos há **{time_delta.days} dias** sem nenhum surto.\n'\
         f'No total, **{amount} surtos** foram registrados.\n\n'\
         f'O motivo do último surto foi **{reason}**,\n'\
-        f'e aconteceu na data **{date}**.'
+        f'e aconteceu na data **{date[:-3]}**.'
     )
 
 
@@ -89,7 +89,7 @@ async def remove(bot: commands.Bot, context: commands.Context, surtos: dict, las
     if not (0 <= index and index < len(surtos_from_id)):
         raise BotError('O número informado não está na lista de surtos.')
     date, reason = surtos_from_id[index]
-    await context.channel.send(f'O surto **{reason}**, que aconteceu na data **{date}**, será removido. Confirme a ação digitando **y**.')
+    await context.channel.send(f'O surto **{reason}**, que aconteceu na data **{date[:-3]}**, será removido. Confirme a ação digitando **y**.')
     try:
         msg = await bot.wait_for('message', timeout=20)
     except TimeoutError:
