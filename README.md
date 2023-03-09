@@ -13,6 +13,7 @@
   <a href="#funcionalidades">Funcionalidades</a> •
   <a href="#to-do-list">To-Do List</a> •
   <a href="#instalação">Instalação</a> •
+  <a href="#permissões">Permissões</a> •
   <a href="#como-usar">Como usar</a> •
   <a href="#créditos">Créditos</a> •
   <a href="#licença">Licença</a>
@@ -38,6 +39,7 @@
 ## To-Do List
 
 Listas de funcionalidades completas e incompletas:
+
 - [x] Armazenamento persistente
 - [x] Novo surto
 - [x] Lista de surtos
@@ -71,6 +73,21 @@ $ python3 main.py
 
 > **Nota**
 > As instruções acima foram direcionadas a um ambiente Linux.
+
+## Permissões
+
+O bot exige as seguintes permissões para funcionar corretamente:
+* Scopes
+  - bot
+* Bot permissions
+  - Manage channels
+  - Send messages
+  - Send messages in Threads
+  - Embed links
+  - Read message history
+* Intents
+  - Default
+  - Message content intent
 
 ## Como usar
 
