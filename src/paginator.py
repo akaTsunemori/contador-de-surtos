@@ -27,7 +27,6 @@ class PaginatorView(discord.ui.View):
             self.children[1].disabled = False
         await interaction.edit_original_response(view=self)
 
-
     @discord.ui.button(emoji='\N{WHITE LEFT POINTING BACKHAND INDEX}')
     async def previous_page(self, interaction: discord.Interaction, _) -> None:
         self.pages.rotate(1)
@@ -47,3 +46,4 @@ class PaginatorView(discord.ui.View):
     @property
     def starting_page(self) -> discord.Embed:
         return self.first_page
+

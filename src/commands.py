@@ -1,5 +1,6 @@
 import datetime
 import discord
+from asyncio import TimeoutError
 from discord.ext import commands
 
 
@@ -57,7 +58,7 @@ async def reset(context: commands.Context, args: list, surtos: dict, last_surtos
     try:
         input_id = int(args[0])
     except ValueError:
-        raise BotError('Argumento inválido.')
+        raise BotError('O valor informado não é um número.')
     if input_id != id:
         raise BotError('O ID informado não corresponde ao ID do servidor.')
     surtos[id] = list()
@@ -66,7 +67,7 @@ async def reset(context: commands.Context, args: list, surtos: dict, last_surtos
     await context.channel.send('Feito.')
 
 
-async def remove(bot: commands.Bot, context: commands.Context, surtos: dict):
+async def remove(bot: commands.Bot, context: commands.Context, surtos: dict, last_surtos: dict):
     id = context.guild.id
     surtos_from_id: list = surtos[id].copy()
     surtos_from_id.sort(reverse=True)
@@ -76,8 +77,29 @@ async def remove(bot: commands.Bot, context: commands.Context, surtos: dict):
             title='Remover surto',
             description='Digite o número correspondente ao surto a ser removido.')
     await context.channel.send(embed=view.starting_page, view=view)
-    msg = await bot.wait_for('message')
-    print(msg.content, surtos_from_id[int(msg.content) - 1]) # Now it's just verification, removal from the list and saving.
+    try:
+        msg = await bot.wait_for('message', timeout=120)
+    except TimeoutError:
+        raise BotError('Tempo limite excedido.')
+    try:
+        index = int(msg.content)
+    except ValueError:
+        raise BotError('O valor informado não é um número válido.')
+    index -= 1
+    if not (0 <= index and index < len(surtos_from_id)):
+        raise BotError('O número informado não está na lista de surtos.')
+    date, reason = surtos_from_id[index]
+    await context.channel.send(f'O surto **{reason}**, que aconteceu na data **{date}**, será removido. Confirme a ação digitando **y**.')
+    try:
+        msg = await bot.wait_for('message', timeout=20)
+    except TimeoutError:
+        raise BotError('Tempo limite excedido.')
+    if msg.content.lower() != 'y':
+        raise BotError('O valor informado é inválido. Operação cancelada.')
+    surtos_from_id.pop(index)
+    surtos[id] = surtos_from_id
+    utils.save(id, surtos, last_surtos)
+    await context.channel.send('Feito.')
 
 
 # Embed color palette:

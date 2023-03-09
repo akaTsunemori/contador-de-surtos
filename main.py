@@ -114,7 +114,7 @@ async def _reset(context: commands.Context, *args) -> None:
 @commands.has_permissions(administrator=True)
 async def _remove(context: commands.Context, *args) -> None:
     try:
-        await cmd.remove(bot, context, surtos)
+        await cmd.remove(bot, context, surtos, last_surtos)
     except BotError as e:
         await context.channel.send(str(e))
 
