@@ -11,6 +11,7 @@
 
 <p align="center">
   <a href="#funcionalidades">Funcionalidades</a> •
+  <a href="#to-do-list">To-Do List</a> •
   <a href="#instalação">Instalação</a> •
   <a href="#como-usar">Como usar</a> •
   <a href="#créditos">Créditos</a> •
@@ -33,6 +34,17 @@
   - Quer começar tudo do zero? Basta usar o comando de reset.
 * Interface amigável
   - Interface separada em páginas para históricos de surtos, melhorando sua legibilidade, principalmente em dispositivos móveis.
+
+## To-Do List
+
+Listas de funcionalidades completas e incompletas:
+- [x] Armazenamento persistente
+- [x] Novo surto
+- [x] Lista de surtos
+- [x] Estatísticas de surtos
+- [x] Resetar bot
+- [x] Remover surto específico
+- [ ] Comando de ajuda
 
 ## Instalação
 
