@@ -46,7 +46,8 @@ Listas de funcionalidades completas e incompletas:
 - [x] Estatísticas de surtos
 - [x] Resetar bot
 - [x] Remover surto específico
-- [ ] Comando de ajuda
+- [x] Comando de ajuda
+- [x] Gifs divertidos para acompanhar os comandos
 
 ## Instalação
 
