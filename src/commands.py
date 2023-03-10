@@ -22,6 +22,7 @@ async def surto(context: commands.Context, surtos: dict, last_surtos: dict, *arg
     last_surtos[id] = [date, reason]
     utils.save(id, surtos, last_surtos)
     await context.channel.send(utils.str_surto(date, reason))
+    await context.channel.send(utils.get_gif('crazy'))
 
 
 async def surtos(context: commands.Context, surtos: dict) -> None:
@@ -48,6 +49,7 @@ async def stats(id: int, channel: discord.TextChannel, surtos: dict, last_surtos
         f'No total, **{amount} surtos** foram registrados.\n\n'\
         f'O motivo do último surto foi **{reason}**,\n'\
         f'e aconteceu na data **{date[:-3]}**.')
+    await channel.send(utils.get_gif())
 
 
 async def reset(context: commands.Context, args: list, surtos: dict, last_surtos: dict) -> None:
@@ -105,6 +107,8 @@ async def remove(bot: commands.Bot, context: commands.Context, surtos: dict, las
 
 async def help(context: commands.Context) -> None:
     embeds = bot_help.get_help()
+    for embed in embeds:
+        embed.set_image(url=utils.get_gif())
     view = PaginatorView(embeds)
     await context.channel.send(embed=view.starting_page, view=view)
 

@@ -3,9 +3,16 @@ import json
 import pytz
 from datetime import datetime
 from discord.ext import commands
+from random import choice
 
 
 from src.paginator import PaginatorView
+
+
+gifs_file = open('gifs.json', 'r')
+gifs = json.load(gifs_file)
+gifs_keys = [i for i in gifs.keys()]
+gifs_file.close()
 
 
 def get_date(current_time: datetime = None) -> datetime:
@@ -28,6 +35,13 @@ def save(id: int, surtos: dict, last_surtos: dict) -> None:
     last_surtos_db.close()
 
 
+def get_gif(key: str = None) -> str:
+    if not key:
+        key = choice(gifs_keys)
+    gif = choice(gifs[key])
+    return gif
+
+
 def surtos_view(surtos_from_id: list, color: int, title: str, description: str) -> PaginatorView:
     surtos_list = surtos_from_id.copy()
     surtos_list.reverse()
@@ -43,6 +57,7 @@ def surtos_view(surtos_from_id: list, color: int, title: str, description: str) 
         embed = discord.Embed(color=color)
         embed.title = title
         embed.description = description
+        embed.set_image(url=get_gif())
         for surto in tmp_surtos_list:
             embed.add_field(name=f'{surto_num}.', value=surto, inline=False)
             surto_num += 1
