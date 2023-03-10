@@ -45,7 +45,6 @@ def get_gif(key: str = None) -> str:
 def check_permissions(context: commands.Context) -> bool:
     if context.message.author.guild_permissions.administrator:
         return True
-    print(context.message.author.roles)
     if 'Gerente de Surtos' in [i.name for i in context.message.author.roles]:
         return True
     return False

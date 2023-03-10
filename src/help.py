@@ -75,4 +75,22 @@ def get_help() -> List[Embed]:
         'a redefinição de todos os seus dados.',
     inline=False)
     embeds.append(embed_6)
+    # Page 7
+    embed_7 = Embed(color=0x3a86ff)
+    embed_7.title = 'Contador de Surtos'
+    embed_7.description = 'Página de ajuda'
+    embed_7.add_field(name='Canal de texto, cargo, e permissões',
+    value='O bot, por via de regra, cria o canal de texto *contador-de-surtos*, que será destinado aos seus avisos '\
+        'diários. Além disso, também é criado o cargo *Gerente de Surtos*, que deve ser usado para designar os '\
+        'usuários com permissões especiais com relação ao bot. Não há como alterar esse comportamento. Abaixo, '\
+        'segue a lista de permissões exigidas para cada comando:\n\n'\
+        '**>surto** - Gerente de Surtos\n'\
+        '**>surtos** - Sem permissões especiais\n'\
+        '**>stats** - Sem permissões especiais\n'\
+        '**>remove** - Gerente de Surtos\n'\
+        '**>reset** - Apenas administradores\n'\
+        '**>help** - Sem permissões especiais\n\n'\
+        'Administradores têm acesso a todos os comandos, independentemente do requerimento de cargo.',
+    inline=False)
+    embeds.append(embed_7)
     return embeds
