@@ -82,6 +82,7 @@ O bot exige as seguintes permissões para funcionar corretamente:
   - bot
 * Bot permissions
   - Manage channels
+  - Manage roles
   - Send messages
   - Send messages in Threads
   - Embed links
