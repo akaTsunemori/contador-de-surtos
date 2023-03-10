@@ -119,6 +119,15 @@ async def _remove(context: commands.Context, *args) -> None:
         await context.channel.send(str(e))
 
 
+@bot.command(name='help')
+@commands.has_permissions(administrator=True)
+async def _help(context: commands.Context, *args) -> None:
+    try:
+        await cmd.help(context)
+    except BotError as e:
+        await context.channel.send(str(e))
+
+
 # Load token and run bot
 load_dotenv('./token.env')
 bot.run(getenv('TOKEN'))

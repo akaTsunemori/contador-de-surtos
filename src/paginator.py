@@ -17,7 +17,6 @@ class PaginatorView(discord.ui.View):
             self.children[1].disabled = True
 
     async def update_buttons(self, interaction: discord.Interaction):
-        self.pages[0].set_footer(text=f'Página {self.current_page} de {self.len}.')
         if self.current_page == 1:
             self.children[0].disabled = True
         else:
@@ -33,6 +32,7 @@ class PaginatorView(discord.ui.View):
         self.pages.rotate(1)
         new_page = self.pages[0]
         self.current_page -= 1
+        self.pages[0].set_footer(text=f'Página {self.current_page} de {self.len}.')
         await interaction.response.edit_message(embed=new_page)
         await self.update_buttons(interaction)
 
@@ -41,6 +41,7 @@ class PaginatorView(discord.ui.View):
         self.pages.rotate(-1)
         new_page = self.pages[0]
         self.current_page += 1
+        self.pages[0].set_footer(text=f'Página {self.current_page} de {self.len}.')
         await interaction.response.edit_message(embed=new_page)
         await self.update_buttons(interaction)
 

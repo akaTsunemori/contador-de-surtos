@@ -5,7 +5,9 @@ from discord.ext import commands
 
 
 import src.utils as utils
+import src.help as bot_help
 from src.bot_error import BotError
+from src.paginator import PaginatorView
 
 
 async def surto(context: commands.Context, surtos: dict, last_surtos: dict, *args) -> None:
@@ -99,6 +101,12 @@ async def remove(bot: commands.Bot, context: commands.Context, surtos: dict, las
     surtos[id] = surtos_from_id
     utils.save(id, surtos, last_surtos)
     await context.channel.send('Feito.')
+
+
+async def help(context: commands.Context) -> None:
+    embeds = bot_help.get_help()
+    view = PaginatorView(embeds)
+    await context.channel.send(embed=view.starting_page, view=view)
 
 
 # Embed color palette:
