@@ -7,7 +7,6 @@ from os.path import exists
 
 
 import src.commands as cmd
-import src.events as events
 import src.utils as utils
 import src.tasks
 from src.bot_error import BotError
