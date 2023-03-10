@@ -11,6 +11,9 @@ from src.paginator import PaginatorView
 
 
 async def surto(context: commands.Context, surtos: dict, last_surtos: dict, *args) -> None:
+    if not utils.check_permissions(context):
+        raise BotError('Apenas membros com o cargo **Gerente de Surtos** '\
+                       'ou administradores podem usar esse comando.')
     id = context.guild.id
     reason = ' '.join(args[0])
     if not reason:
@@ -54,6 +57,8 @@ async def stats(id: int, channel: discord.TextChannel, surtos: dict, last_surtos
 
 async def reset(context: commands.Context, args: list, surtos: dict, last_surtos: dict) -> None:
     id = context.guild.id
+    if not context.message.author.guild_permissions.administrator:
+        raise BotError('Apenas administradores podem usar esse comando.')
     if not args:
         raise BotError('ID do servidor ausente.')
     if len(args) > 1:
@@ -71,7 +76,11 @@ async def reset(context: commands.Context, args: list, surtos: dict, last_surtos
 
 
 async def remove(bot: commands.Bot, context: commands.Context, surtos: dict, last_surtos: dict):
+    if not utils.check_permissions(context):
+        raise BotError('Apenas membros com o cargo **Gerente de Surtos** '\
+                       'ou administradores podem usar esse comando.')
     id = context.guild.id
+    check = lambda message: context.channel == message.channel and context.author == message.author
     surtos_from_id: list = surtos[id].copy()
     surtos_from_id.sort(reverse=True)
     view = utils.surtos_view(
@@ -81,7 +90,7 @@ async def remove(bot: commands.Bot, context: commands.Context, surtos: dict, las
             description='Digite o número correspondente ao surto a ser removido.')
     await context.channel.send(embed=view.starting_page, view=view)
     try:
-        msg = await bot.wait_for('message', timeout=120)
+        msg = await bot.wait_for('message', check=check, timeout=120)
     except TimeoutError:
         raise BotError('Tempo limite excedido.')
     try:
@@ -94,7 +103,7 @@ async def remove(bot: commands.Bot, context: commands.Context, surtos: dict, las
     date, reason = surtos_from_id[index]
     await context.channel.send(f'O surto **{reason}**, que aconteceu na data **{date[:-3]}**, será removido. Confirme a ação digitando **y**.')
     try:
-        msg = await bot.wait_for('message', timeout=20)
+        msg = await bot.wait_for('message', check=check, timeout=20)
     except TimeoutError:
         raise BotError('Tempo limite excedido.')
     if msg.content.lower() != 'y':

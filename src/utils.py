@@ -1,6 +1,7 @@
 import discord
 import json
 import pytz
+from discord.ext import commands
 from datetime import datetime
 from random import choice
 
@@ -39,6 +40,15 @@ def get_gif(key: str = None) -> str:
         key = choice(gifs_keys)
     gif = choice(gifs[key])
     return gif
+
+
+def check_permissions(context: commands.Context) -> bool:
+    if context.message.author.guild_permissions.administrator:
+        return True
+    print(context.message.author.roles)
+    if 'Gerente de Surtos' in [i.name for i in context.message.author.roles]:
+        return True
+    return False
 
 
 def surtos_view(surtos_from_id: list, color: int, title: str, description: str) -> PaginatorView:

@@ -40,9 +40,12 @@ async def bot_setup() -> None:
         last_surtos[id] = json.load(last_surto_db)
         surtos_db.close()
         last_surto_db.close()
-        channel_id = [i.id for i in guild.text_channels if i.name == 'contador-de-surtos']
-        if not channel_id:
+        channel_check = [i for i in guild.text_channels if i.name == 'contador-de-surtos']
+        if not channel_check:
             await guild.create_text_channel('contador-de-surtos')
+        role_check = [i for i in guild.roles if i.name == 'Gerente de Surtos']
+        if not role_check:
+            await guild.create_role(name='Gerente de Surtos')
 
 
 # Bot tasks
@@ -70,11 +73,11 @@ async def on_guild_join(guild: discord.Guild) -> None:
         last_surtos[id] = list()
         utils.save(id, surtos, last_surtos)
     await guild.create_text_channel('contador-de-surtos')
+    await guild.create_role(name='Gerente de Surtos')
 
 
 # Bot commands
 @bot.command(name='surto')
-@commands.has_permissions(administrator=True) # These perms should be modified for every cmd
 async def _surto(context: commands.Context, *args) -> None:
     try:
         await cmd.surto(context, surtos, last_surtos, args)
@@ -83,7 +86,6 @@ async def _surto(context: commands.Context, *args) -> None:
 
 
 @bot.command(name='surtos')
-@commands.has_permissions(administrator=True)
 async def _surtos(context: commands.Context, *args) -> None:
     try:
         await cmd.surtos(context, surtos)
@@ -92,7 +94,6 @@ async def _surtos(context: commands.Context, *args) -> None:
 
 
 @bot.command(name='stats')
-@commands.has_permissions(administrator=True)
 async def _stats(context: commands.Context, *args) -> None:
     try:
         await cmd.stats(context.guild.id, context.channel, surtos, last_surtos)
@@ -101,7 +102,6 @@ async def _stats(context: commands.Context, *args) -> None:
 
 
 @bot.command(name='reset')
-@commands.has_permissions(administrator=True)
 async def _reset(context: commands.Context, *args) -> None:
     try:
         await cmd.reset(context, args, surtos, last_surtos)
@@ -110,7 +110,6 @@ async def _reset(context: commands.Context, *args) -> None:
 
 
 @bot.command(name='remove')
-@commands.has_permissions(administrator=True)
 async def _remove(context: commands.Context, *args) -> None:
     try:
         await cmd.remove(bot, context, surtos, last_surtos)
@@ -119,7 +118,6 @@ async def _remove(context: commands.Context, *args) -> None:
 
 
 @bot.command(name='help')
-@commands.has_permissions(administrator=True)
 async def _help(context: commands.Context, *args) -> None:
     try:
         await cmd.help(context)
