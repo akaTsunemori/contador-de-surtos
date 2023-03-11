@@ -30,6 +30,8 @@ async def surto(context: commands.Context, surtos: dict, last_surtos: dict, *arg
 
 async def surtos(context: commands.Context, surtos: dict) -> None:
     id = context.guild.id
+    if not surtos[id]:
+        raise BotError('A lista de surtos está vazia.')
     surtos_from_id: list = surtos[id].copy()
     surtos_from_id.sort(reverse=True)
     view = utils.surtos_view(
@@ -80,6 +82,8 @@ async def remove(bot: commands.Bot, context: commands.Context, surtos: dict, las
         raise BotError('Apenas membros com o cargo **Gerente de Surtos** '\
                        'ou administradores podem usar esse comando.')
     id = context.guild.id
+    if not surtos[id]:
+        raise BotError('A lista de surtos está vazia.')
     check = lambda message: context.channel == message.channel and context.author == message.author
     surtos_from_id: list = surtos[id].copy()
     surtos_from_id.sort(reverse=True)
